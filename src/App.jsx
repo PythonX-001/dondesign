@@ -27,7 +27,7 @@ import {
 // --- Translations ---
 const translations = {
   en: {
-    title: "CoverArt Studio",
+    title: "Don-Designs",
     subtitle: "Bringing your stories to visual life.",
     login: "Login",
     signup: "Sign Up",
@@ -61,7 +61,7 @@ const translations = {
     selectDate: "Select a date on the calendar first.",
     contactMethod: "Preferred way to communicate (WhatsApp, Phone, etc.)",
     authError: "Invalid credentials. (Try admin@studio.com / admin123)",
-    copyright: "© 2024 CoverArt Studio. All rights reserved.",
+    copyright: "© 2024 PythonX Studio. All rights reserved.",
     recording: "Recording...",
     micPermission: "Microphone access is required.",
     loginToBook: "Please login to view availability and book.",
@@ -74,7 +74,7 @@ const translations = {
     serverError: "Could not connect to server. Ensure 'node server.js' is running."
   },
   fr: {
-    title: "CoverArt Studio",
+    title: "Don-Designs",
     subtitle: "Donner vie à vos histoires.",
     login: "Connexion",
     signup: "S'inscrire",
@@ -108,7 +108,7 @@ const translations = {
     selectDate: "Sélectionnez d'abord une date sur le calendrier.",
     contactMethod: "Moyen de communication préféré (WhatsApp, Tél, etc.)",
     authError: "Identifiants invalides.",
-    copyright: "© 2024 CoverArt Studio. Tous droits réservés.",
+    copyright: "© 2024 PythonX Studio. Tous droits réservés.",
     recording: "Enregistrement...",
     micPermission: "L'accès au micro est requis.",
     loginToBook: "Veuillez vous connecter pour réserver.",
@@ -121,7 +121,7 @@ const translations = {
     serverError: "Impossible de se connecter au serveur. Vérifiez que 'node server.js' est lancé."
   },
   ar: {
-    title: "استوديو الغلاف",
+    title: "Don-Designs",
     subtitle: "نعطي قصصك شكلاً وحياة.",
     login: "دخول",
     signup: "تسجيل جديد",
@@ -155,7 +155,7 @@ const translations = {
     selectDate: "يرجى اختيار تاريخ من التقويم أولاً.",
     contactMethod: "طريقة التواصل المفضلة (واتساب، هاتف، إلخ)",
     authError: "بيانات الدخول غير صحيحة.",
-    copyright: "© 2024 استوديو الغلاف. جميع الحقوق محفوظة.",
+    copyright: "© 2024 PytonX . جميع الحقوق محفوظة.",
     recording: "جاري التسجيل...",
     micPermission: "مطلوب السماح باستخدام الميكروفون.",
     loginToBook: "يرجى تسجيل الدخول للحجز.",
