@@ -27,7 +27,7 @@ import {
 // --- Translations ---
 const translations = {
   en: {
-    title: "Don-Designs",
+    title: "CoverArt Studio",
     subtitle: "Bringing your stories to visual life.",
     login: "Login",
     signup: "Sign Up",
@@ -61,7 +61,7 @@ const translations = {
     selectDate: "Select a date on the calendar first.",
     contactMethod: "Preferred way to communicate (WhatsApp, Phone, etc.)",
     authError: "Invalid credentials. (Try admin@studio.com / admin123)",
-    copyright: "© 2024 PythonX Studio. All rights reserved.",
+    copyright: "© 2024 CoverArt Studio. All rights reserved.",
     recording: "Recording...",
     micPermission: "Microphone access is required.",
     loginToBook: "Please login to view availability and book.",
@@ -71,10 +71,10 @@ const translations = {
     pending: "Pending",
     approved: "Approved",
     delete: "Delete",
-    serverError: "Could not connect to server. Ensure 'node server.js' is running."
+    serverError: "Could not connect to server. Ensure 'node api/index.js' is running."
   },
   fr: {
-    title: "Don-Designs",
+    title: "CoverArt Studio",
     subtitle: "Donner vie à vos histoires.",
     login: "Connexion",
     signup: "S'inscrire",
@@ -108,7 +108,7 @@ const translations = {
     selectDate: "Sélectionnez d'abord une date sur le calendrier.",
     contactMethod: "Moyen de communication préféré (WhatsApp, Tél, etc.)",
     authError: "Identifiants invalides.",
-    copyright: "© 2024 PythonX Studio. Tous droits réservés.",
+    copyright: "© 2024 CoverArt Studio. Tous droits réservés.",
     recording: "Enregistrement...",
     micPermission: "L'accès au micro est requis.",
     loginToBook: "Veuillez vous connecter pour réserver.",
@@ -118,10 +118,10 @@ const translations = {
     pending: "En attente",
     approved: "Approuvé",
     delete: "Supprimer",
-    serverError: "Impossible de se connecter au serveur. Vérifiez que 'node server.js' est lancé."
+    serverError: "Impossible de se connecter au serveur. Vérifiez que 'node api/index.js' est lancé."
   },
   ar: {
-    title: "Don-Designs",
+    title: "استوديو الغلاف",
     subtitle: "نعطي قصصك شكلاً وحياة.",
     login: "دخول",
     signup: "تسجيل جديد",
@@ -155,7 +155,7 @@ const translations = {
     selectDate: "يرجى اختيار تاريخ من التقويم أولاً.",
     contactMethod: "طريقة التواصل المفضلة (واتساب، هاتف، إلخ)",
     authError: "بيانات الدخول غير صحيحة.",
-    copyright: "© 2024 PytonX . جميع الحقوق محفوظة.",
+    copyright: "© 2024 استوديو الغلاف. جميع الحقوق محفوظة.",
     recording: "جاري التسجيل...",
     micPermission: "مطلوب السماح باستخدام الميكروفون.",
     loginToBook: "يرجى تسجيل الدخول للحجز.",
@@ -165,7 +165,7 @@ const translations = {
     pending: "قيد الانتظار",
     approved: "مقبول",
     delete: "حذف",
-    serverError: "تعذر الاتصال بالخادم. تأكد من تشغيل 'node server.js'."
+    serverError: "تعذر الاتصال بالخادم. تأكد من تشغيل 'node api/index.js'."
   }
 };
 
@@ -239,6 +239,9 @@ export default function App() {
   const [view, setView] = useState('landing'); 
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState(false);
+  
+  // New State for Mobile Menu
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Load language settings on mount
   useEffect(() => {
@@ -260,7 +263,6 @@ export default function App() {
 
   const fetchBookings = async () => {
     try {
-        // CHANGED: Use relative path (works for both dev proxy and production static serve)
         const res = await fetch('/api/bookings');
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
@@ -276,7 +278,6 @@ export default function App() {
     try {
         const newBooking = { id: Date.now().toString(), ...bookingData };
         
-        // CHANGED: Use relative path
         const res = await fetch('/api/bookings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -286,7 +287,7 @@ export default function App() {
         if (!res.ok) throw new Error('Failed to save');
         
         // Update UI
-        await fetchBookings(); // Reload list to be safe
+        await fetchBookings(); 
         return newBooking;
     } catch (err) {
         console.error(err);
@@ -296,7 +297,6 @@ export default function App() {
 
   const deleteBooking = async (id) => {
     try {
-        // CHANGED: Use relative path
         const res = await fetch(`/api/bookings/${id}`, {
             method: 'DELETE'
         });
@@ -362,11 +362,12 @@ export default function App() {
       <nav className={`fixed top-0 w-full z-40 bg-black/80 backdrop-blur-md border-b border-gray-800 ${serverError ? 'mt-8' : ''} transition-all`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('landing')}>
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => { setView('landing'); setIsMobileMenuOpen(false); }}>
               <Palette className="text-purple-500" />
               <span className="font-bold text-xl tracking-tight">{t.title}</span>
             </div>
 
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
               {user ? (
                 <>
@@ -393,15 +394,55 @@ export default function App() {
               <LanguageSwitcher current={lang} setLang={setLang} />
             </div>
 
-            {/* Mobile Menu Button (Simplified) */}
+            {/* Mobile Menu Toggle (Hamburger) */}
             <div className="md:hidden flex items-center gap-4">
               <LanguageSwitcher current={lang} setLang={setLang} />
-              <button onClick={() => setView(user ? 'dashboard' : 'login')}>
-                 {user ? <User size={24}/> : <Menu size={24}/>}
+              <button 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+                className="text-gray-300 hover:text-white p-2"
+              >
+                 {isMobileMenuOpen ? <X size={24}/> : <Menu size={24}/>}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown Panel */}
+        {isMobileMenuOpen && (
+           <div className="md:hidden bg-gray-900 border-b border-gray-800 animate-in slide-in-from-top-5 duration-200">
+             <div className="px-4 pt-2 pb-6 space-y-4 flex flex-col">
+                {user ? (
+                <>
+                   {user.isAdmin && (
+                     <button onClick={() => { setView('admin'); setIsMobileMenuOpen(false); }} className="text-yellow-500 flex items-center gap-2 hover:text-yellow-400 font-medium py-2">
+                        <Shield size={16} /> {t.adminPanel}
+                     </button>
+                   )}
+                   <button onClick={() => { setView('dashboard'); setIsMobileMenuOpen(false); }} className="text-left hover:text-purple-400 text-gray-200 py-2 font-medium border-b border-gray-800">
+                     {t.bookNow}
+                   </button>
+                   <div className="flex items-center justify-between pt-2">
+                       <span className="text-gray-400 text-sm flex items-center gap-2">
+                        <User size={14}/> {user.displayName}
+                       </span>
+                       <Button variant="outline" onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="!py-1 !px-4 text-xs">
+                         {t.logout}
+                       </Button>
+                   </div>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => { setView('login'); setIsMobileMenuOpen(false); }} className="text-left font-medium text-white hover:text-purple-400 py-2 border-b border-gray-800">
+                    {t.login}
+                  </button>
+                   <button onClick={() => { setView('signup'); setIsMobileMenuOpen(false); }} className="text-left text-gray-400 hover:text-white py-2">
+                    {t.signup}
+                  </button>
+                </>
+              )}
+             </div>
+           </div>
+        )}
       </nav>
 
       {/* Main Content Area */}
@@ -814,8 +855,7 @@ const ReservationForm = ({ t, user, selectedDate, onSuccess, addBooking }) => {
     // --- EMAILJS CONFIGURATION ---
     // Uncomment and fill in details
     
-
-
+ 
     const serviceID = 'service_wfk4rq4';
     const templateID = 'template_72qy6xr';
     const publicKey = 'HkV8KWJJ-JMuCxJ_O';
@@ -841,6 +881,7 @@ ${desc}
     } catch (error) {
         console.error("Email failed:", error);
     }
+
 
     // Real API call
     await addBooking(bookingData);
